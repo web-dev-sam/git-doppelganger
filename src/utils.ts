@@ -34,6 +34,7 @@ export async function clearFolder(path: string): Promise<string> {
   const normalizedPath = path.endsWith("/") ? path : path + "/";
   try {
     Deno.removeSync(normalizedPath, { recursive: true });
+    // deno-lint-ignore no-empty
   } catch {}
   await ensureDir(normalizedPath);
   return normalizedPath;
