@@ -1,10 +1,9 @@
 {
   "name": "@webry/clone",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "license": "MIT",
   "tasks": {
-    "test": "deno run -A ./src/cli.ts --test",
-    "test-bun": "bun run ./src/cli.ts --test"
+    "test": "deno run -A ./src/cli.ts --test"
   },
   "exports": "./src/cli.ts",
   "imports": {

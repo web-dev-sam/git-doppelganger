@@ -37,6 +37,7 @@ for (let i = fromRepoCommits.length - 1; i > 0; i--) {
   }
 
   for (const file of diff.files) {
+    console.log(file.file);
     const maskedPath = await maskPath(file.file);
     const filePath = toRepoBase + maskedPath;
 

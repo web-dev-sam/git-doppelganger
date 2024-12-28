@@ -2,7 +2,7 @@ import { ensureDir } from "@std/fs";
 
 export async function maskName(
   name: string,
-  length: number = 8,
+  length: number = 7,
 ): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(name);
@@ -14,7 +14,7 @@ export async function maskName(
 }
 
 export async function maskPath(path: string): Promise<string> {
-  const parts = path.split(/[\/\\]/);
+  const parts = path.split(/[\/]/);
   const ext = parts[parts.length - 1].includes(".")
     ? "." + parts[parts.length - 1].split(".").pop()
     : "";
