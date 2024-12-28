@@ -1,6 +1,6 @@
 {
   "name": "@webry/clone",
-  "version": "0.0.3",
+  "version": "0.0.4-alpha",
   "license": "MIT",
   "tasks": {
     "test": "deno run -A ./src/cli.ts --test",
@@ -20,7 +20,8 @@
   "publish": {
     "include": [
       "README.md",
-      "src/**/*.ts"
+      "src/**/*.ts",
+      "demo.png"
     ]
   }
 }
