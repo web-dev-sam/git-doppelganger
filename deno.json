@@ -9,9 +9,7 @@
   "exports": "./src/cli.ts",
   "imports": {
     "@cliffy/prompt": "jsr:@cliffy/prompt@^1.0.0-rc.7",
-    "@oxi/core": "jsr:@oxi/core@^0.3.2",
     "@oxi/schema": "jsr:@oxi/schema@^0.3.0",
-    "@std/cli": "jsr:@std/cli@^1.0.9",
     "@std/crypto": "jsr:@std/crypto@^1.0.3",
     "@std/fs": "jsr:@std/fs@^1.0.8",
     "@std/log": "jsr:@std/log@^0.224.12",

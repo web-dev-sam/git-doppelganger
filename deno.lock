@@ -14,7 +14,6 @@
     "jsr:@oxi/result@0.3": "0.3.1",
     "jsr:@oxi/schema@0.3": "0.3.0",
     "jsr:@std/assert@~1.0.6": "1.0.10",
-    "jsr:@std/cli@^1.0.9": "1.0.9",
     "jsr:@std/crypto@^1.0.3": "1.0.3",
     "jsr:@std/encoding@~1.0.5": "1.0.6",
     "jsr:@std/fmt@^1.0.3": "1.0.3",
@@ -98,9 +97,6 @@
     "@std/assert@1.0.10": {
       "integrity": "59b5cbac5bd55459a19045d95cc7c2ff787b4f8527c0dd195078ff6f9481fbb3"
     },
-    "@std/cli@1.0.9": {
-      "integrity": "557e5865af000efbf3f737dcfea5b8ab86453594f4a9cd8d08c9fa83d8e3f3bc"
-    },
     "@std/crypto@1.0.3": {
       "integrity": "a2a32f51ddef632d299e3879cd027c630dcd4d1d9a5285d6e6788072f4e51e7f"
     },
@@ -174,9 +170,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@cliffy/prompt@^1.0.0-rc.7",
-      "jsr:@oxi/core@~0.3.2",
       "jsr:@oxi/schema@0.3",
-      "jsr:@std/cli@^1.0.9",
       "jsr:@std/crypto@^1.0.3",
       "jsr:@std/fs@^1.0.8",
       "jsr:@std/log@~0.224.12",
