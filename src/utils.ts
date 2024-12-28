@@ -30,6 +30,9 @@ export async function maskPath(path: string): Promise<string> {
   return maskedParts.join("/") + ext;
 }
 
+/**
+ * Clear a folder and ensure it exists
+ */
 export async function clearFolder(path: string): Promise<string> {
   const normalizedPath = path.endsWith("/") ? path : path + "/";
   try {

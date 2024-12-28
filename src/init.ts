@@ -2,6 +2,7 @@ import { Input, prompt } from "@cliffy/prompt";
 import { error } from "@std/log";
 import { simpleGit } from "simple-git";
 import * as s from "@oxi/schema";
+import { clearFolder } from "./utils.ts";
 
 export async function initCli() {
   const testMode = Deno.args.includes("--test");
@@ -37,7 +38,7 @@ export async function initCli() {
       type: Input,
     }, {
       name: "outputPath",
-      message: "Where do you want to generate the new repository?",
+      message: "Where do you want to generate the new repository? (This folder will be cleared)",
       minLength: 1,
       type: Input,
     }]);
@@ -69,17 +70,13 @@ export async function initCli() {
     Deno.exit(1);
   }
 
-  const toRepo = simpleGit();
-  const isValidToRepo = await toRepo.checkIsRepo();
-  if (!isValidToRepo) {
-    error("Invalid --outputPath. It must be a valid git repository.");
-    Deno.exit(1);
-  }
 
+  const toRepoBase = await clearFolder(outputPath);
+  const toRepo = simpleGit(outputPath);
+  await toRepo.init();
   await toRepo
     .addConfig("user.name", targetName)
     .addConfig("user.email", targetEmail);
-  await toRepo.init();
 
-  return { emails, targetName, targetEmail, outputPath, fromRepo, toRepo };
+  return { emails, targetName, targetEmail, outputPath, fromRepo, toRepo, toRepoBase };
 }

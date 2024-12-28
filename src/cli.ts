@@ -1,9 +1,9 @@
 import { error, info } from "@std/log";
 import { ensureFile } from "@std/fs";
 import { initCli } from "./init.ts";
-import { clearFolder, getRandomLine, maskPath } from "./utils.ts";
+import { getRandomLine, maskPath } from "./utils.ts";
 
-const { fromRepo, emails, outputPath, toRepo } = await initCli();
+const { fromRepo, emails, toRepo, toRepoBase } = await initCli();
 
 const { all: fromRepoCommits } = await fromRepo.log();
 if (fromRepoCommits.length < 2) {
@@ -11,7 +11,6 @@ if (fromRepoCommits.length < 2) {
   Deno.exit(0);
 }
 
-const toRepoBase = await clearFolder(outputPath);
 for (let i = fromRepoCommits.length - 1; i > 0; i--) {
   const isFirst = i === fromRepoCommits.length - 1;
   const EMPTY_TREE = { hash: "4b825dc642cb6eb9a060e54bf8d69288fbee4904" };
