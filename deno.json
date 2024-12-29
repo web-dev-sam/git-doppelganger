@@ -1,11 +1,10 @@
 {
   "name": "@webry/clone",
-  "version": "0.1.0-alpha",
+  "version": "0.1.0",
   "license": "MIT",
   "tasks": {
     "dev": "deno task dev:deno",
-    "dev:deno": "deno run --allow-run=git -E -R -W ./src/cli.ts -f ../color-wizard -t ./.repo",
-    "dev:bun": "bun run ./src/cli.ts"
+    "dev:deno": "deno run --allow-run=git -E -R -W ./src/cli.ts -f ../color-wizard -t ./.repo"
   },
   "exports": "./src/cli.ts",
   "imports": {
