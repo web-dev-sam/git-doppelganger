@@ -10,6 +10,16 @@
         "reveal": "always"
       },
       "group": "build"
+    },
+    {
+      "label": "Dev",
+      "command": "deno task dev",
+      "type": "shell",
+      "args": [],
+      "presentation": {
+        "reveal": "always"
+      },
+      "group": "build"
     }
   ]
 }

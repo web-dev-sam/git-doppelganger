@@ -1,14 +1,14 @@
-import { error, info } from "@std/log";
-import { ensureFile } from "@std/fs";
 import { initCli } from "./init.ts";
 import { getRandomLine, maskPath } from "./utils.ts";
+import process from "node:process";
+import { mkdir, unlink, writeFile, readFile } from "node:fs/promises";
+import { dirname } from "node:path";
 
 const { fromRepo, emails, toRepo, toRepoBase } = await initCli();
-
 const { all: fromRepoCommits } = await fromRepo.log();
 if (fromRepoCommits.length < 2) {
-  error("Not enough commits to compare");
-  Deno.exit(0);
+  console.error("Not enough commits to compare");
+  process.exit(1);
 }
 
 for (let i = fromRepoCommits.length - 1; i > 0; i--) {
@@ -37,37 +37,36 @@ for (let i = fromRepoCommits.length - 1; i > 0; i--) {
   }
 
   for (const file of diff.files) {
-    console.log(file.file);
     const maskedPath = await maskPath(file.file);
     const filePath = toRepoBase + maskedPath;
+    await mkdir(dirname(filePath), { recursive: true });
+    await writeFile(filePath, "", { flag: "a" });
 
     // Binary files
     if (file.binary) {
-      await ensureFile(filePath);
       if (file.after === 0) {
-        Deno.removeSync(filePath);
+        await unlink(filePath);
         continue;
       }
 
       const content = new Uint8Array(file.after).fill(0);
-      await Deno.writeFile(filePath, content);
+      await writeFile(filePath, content);
       continue;
     }
 
     // Text files
-    await ensureFile(filePath);
-    const oldContent = await Deno.readTextFile(filePath);
+    const oldContent = await readFile(filePath, "utf8");
     const addedLines = new Array(file.insertions).fill(0).map(getRandomLine);
     const addedContent = oldContent + addedLines.join("");
     const removedContent = addedContent
       .split("\n")
       .slice(0, file.deletions === 0 ? undefined : -file.deletions)
       .join("\n").trim() + "\n";
-    await Deno.writeTextFile(filePath, removedContent);
+      await writeFile(filePath, removedContent);
 
-    const newContent = await Deno.readTextFile(filePath);
+    const newContent = await readFile(filePath, "utf8");
     if (newContent.trim().length === 0) {
-      Deno.removeSync(filePath);
+      await unlink(filePath);
       continue;
     }
   }
@@ -76,7 +75,10 @@ for (let i = fromRepoCommits.length - 1; i > 0; i--) {
     "--date": newerCommit.date,
   });
 
-  const progress = ((fromRepoCommits.length - i) / fromRepoCommits.length) *
+  const progress = ((fromRepoCommits.length - 1 - i) / (fromRepoCommits.length - 2)) *
     100;
-  info(`${progress.toFixed(1)}% - ${newerCommit.date}`);
+  console.info(`${progress.toFixed(1)}% - ${newerCommit.date}`);
 }
+
+console.info("Done!");
+process.exit(0);

@@ -1,4 +1,6 @@
-import { ensureDir } from "@std/fs";
+import { glob } from "glob";
+import { mkdir, rm } from "node:fs/promises";
+import path from "node:path";
 
 export async function maskName(
   name: string,
@@ -30,18 +32,48 @@ export async function maskPath(path: string): Promise<string> {
   return maskedParts.join("/") + ext;
 }
 
-/**
- * Clear a folder and ensure it exists
- */
-export async function clearFolder(path: string): Promise<string> {
+export async function ensureEmptyFolder(path: string): Promise<string> {
   const normalizedPath = path.endsWith("/") ? path : path + "/";
   try {
-    Deno.removeSync(normalizedPath, { recursive: true });
-    // deno-lint-ignore no-empty
-  } catch {}
-  await ensureDir(normalizedPath);
+    await rm(normalizedPath, { recursive: true, force: true });
+  } catch (error) {
+    console.error(`Error: Could not remove ${normalizedPath}!`, error);
+  }
+  await mkdir(normalizedPath, { recursive: true });
   return normalizedPath;
 }
+
+
 export function getRandomLine() {
   return Math.random().toString(36).substring(2) + "\n";
+}
+
+export async function searchPaths(input = "") {
+  const base = input || ".";
+  try {
+    const matches = await glob(`${base}*`, {
+      mark: true,
+      dot: true,
+      absolute: true,
+    });
+
+    return matches.map((match) => ({
+      name: match.endsWith("/") ? `${match}` : match,
+      value: path.resolve(match),
+    }));
+  } catch (_error) {
+    return [];
+  }
+}
+
+export async function safe<T>(
+  operation: () => Promise<T> | T,
+): Promise<T | undefined> {
+  try {
+    const data = await operation();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return undefined;
+  }
 }

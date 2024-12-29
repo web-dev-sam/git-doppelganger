@@ -1,57 +1,51 @@
-import { Input, prompt } from "@cliffy/prompt";
-import { error } from "@std/log";
 import { simpleGit } from "simple-git";
 import * as s from "@oxi/schema";
-import { clearFolder } from "./utils.ts";
+import prompts, { type PromptObject } from "prompts";
+import process from "node:process";
+import { processArgs } from "./args.ts";
+import { ensureEmptyFolder } from "./utils.ts";
+
 
 export async function initCli() {
-  const testMode = Deno.args.includes("--test");
+  const args = await processArgs(process.argv.slice(2) || Deno.args);
+  if (!args) {
+    process.exit(1);
+  }
 
-  const result = testMode
-    ? {
-      targetName: "Samuel Braun",
-      targetEmail: "sam@webry.com",
-      emails: "sam@webry.com",
-      repoPath: "C:\\Users\\SBrau\\Desktop\\color-wizard",
-      outputPath: "./.repo",
-    }
-    : await prompt([{
-      name: "targetName",
-      message: "What's your wanted git name? (user.name)",
-      minLength: 1,
-      type: Input,
-    }, {
-      name: "targetEmail",
-      message: "What's your wanted git email? (user.email)",
-      minLength: 6,
-      type: Input,
-    }, {
-      name: "emails",
-      message:
-        "Which author's commits do you want to copy? (comma separated emails)",
-      minLength: 6,
-      type: Input,
-    }, {
-      name: "repoPath",
-      message: "Where is the repository you want to copy?",
-      minLength: 1,
-      type: Input,
-    }, {
-      name: "outputPath",
-      message: "Where do you want to generate the new repository? (This folder will be cleared)",
-      minLength: 1,
-      type: Input,
-    }]);
+  const result = await prompts(
+    [
+      {
+        type: "text",
+        name: "targetName",
+        message: "What's your wanted git name (user.name)?",
+        validate: (value: string) =>
+          value.length >= 1 || "Name must not be empty",
+      },
+      {
+        type: "text",
+        name: "targetEmail",
+        message: "What's your wanted git email (user.email)?",
+        validate: (value: string) =>
+          value.length >= 6 || "Email must be at least 6 characters",
+      },
+      {
+        type: "text",
+        name: "emails",
+        message:
+          "Which author's commits do you want to copy? (comma separated emails)",
+        validate: (value: string) =>
+          value.length >= 6 || "Emails must be at least 6 characters",
+      },
+    ] satisfies PromptObject[],
+  );
   const argsResult = s.obj({
     emails: s.opt(s.str()),
     targetEmail: s.str(),
     targetName: s.str(),
-    outputPath: s.str(),
-    repoPath: s.str(),
   }).parse(result);
   if (argsResult.isErr()) {
-    error(JSON.stringify(argsResult.unwrapErr(), null, 2));
-    Deno.exit(1);
+    console.error(JSON.stringify(argsResult.unwrapErr(), null, 2));
+    process.exit(1);
   }
 
   const argsOk = argsResult.unwrap();
@@ -59,24 +53,30 @@ export async function initCli() {
     .unwrapOr([]);
   const targetName = argsOk.targetName;
   const targetEmail = argsOk.targetEmail;
-  const outputPath = argsOk.outputPath;
-  const repoPath = argsOk.repoPath;
+  const fromPath = args.from;
+  const toPath = args.to;
 
-  // Validate arguments
-  const fromRepo = simpleGit(repoPath);
+  const fromRepo = simpleGit(fromPath);
   const isValidFromRepo = await fromRepo.checkIsRepo();
   if (!isValidFromRepo) {
-    error("Invalid --repoPath. It must be a valid git repository.");
-    Deno.exit(1);
+    console.error("Invalid --repoPath. It must be a valid git repository.");
+    process.exit(1);
   }
 
-
-  const toRepoBase = await clearFolder(outputPath);
-  const toRepo = simpleGit(outputPath);
+  const toRepoBase = await ensureEmptyFolder(toPath);
+  const toRepo = simpleGit(toPath);
   await toRepo.init();
   await toRepo
     .addConfig("user.name", targetName)
     .addConfig("user.email", targetEmail);
 
-  return { emails, targetName, targetEmail, outputPath, fromRepo, toRepo, toRepoBase };
+  return {
+    emails,
+    targetName,
+    targetEmail,
+    toPath,
+    fromRepo,
+    toRepo,
+    toRepoBase,
+  };
 }

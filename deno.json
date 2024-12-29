@@ -1,17 +1,18 @@
 {
   "name": "@webry/clone",
-  "version": "0.0.5",
+  "version": "0.1.0-alpha",
   "license": "MIT",
   "tasks": {
-    "test": "deno run -A ./src/cli.ts --test"
+    "dev": "deno task dev:deno",
+    "dev:deno": "deno run --allow-run=git -E -R -W ./src/cli.ts -f ../color-wizard -t ./.repo",
+    "dev:bun": "bun run ./src/cli.ts"
   },
   "exports": "./src/cli.ts",
   "imports": {
-    "@cliffy/prompt": "jsr:@cliffy/prompt@^1.0.0-rc.7",
     "@oxi/schema": "jsr:@oxi/schema@^0.3.0",
-    "@std/crypto": "jsr:@std/crypto@^1.0.3",
-    "@std/fs": "jsr:@std/fs@^1.0.8",
-    "@std/log": "jsr:@std/log@^0.224.12",
+    "@types/prompts": "npm:@types/prompts@^2.4.9",
+    "glob": "npm:glob@^11.0.0",
+    "prompts": "npm:prompts@^2.4.2",
     "simple-git": "npm:simple-git@^3.27.0"
   },
   "publish": {
