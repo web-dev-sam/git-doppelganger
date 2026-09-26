@@ -1,0 +1,32 @@
+{
+  "title": "@webry/clone",
+  "tagline": "A deno cli to clone a repo anonymously while preserving commit & file type statistics. 👥",
+  "sections": [
+    {
+      "title": "What it does",
+      "body": [
+        "Files and code are randomly generated and no real data is copied."
+      ]
+    },
+    {
+      "title": "How to install it",
+      "body": [
+        "```bash",
+        "deno install --global --allow-run=\"git\" --allow-env --allow-read --allow-write --name webry-clone jsr:@webry/clone",
+        "```"
+      ]
+    },
+    {
+      "title": "How to use it",
+      "body": [
+        "```bash",
+        "webry-clone -f ./from-gitlab-repo -t ./to-github-repo",
+        "```"
+      ]
+    },
+    {
+      "title": "How it looks",
+      "images": [{ "src": "demo.png", "width": 600 }]
+    }
+  ]
+}
