@@ -26,7 +26,13 @@
     },
     {
       "title": "How it looks",
-      "images": [{ "src": "demo.png", "width": 600 }]
+      "images": [
+        {
+          "src": "demo.png",
+          "width": 600
+        }
+      ]
     }
-  ]
+  ],
+  "why": "Work done in private/GitLab repos never shows on GitHub; this mirrors the statistics without leaking a single line of real code."
 }

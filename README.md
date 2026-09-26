@@ -9,6 +9,9 @@ _A deno cli to clone a repo anonymously while preserving commit & file type stat
 
 &nbsp;
 
+## Why does this exist?
+Work done in private/GitLab repos never shows on GitHub; this mirrors the statistics without leaking a single line of real code.
+
 ## What it does
 
 Files and code are randomly generated and no real data is copied.
